@@ -82,10 +82,10 @@ io.sockets.on('connection', function (socket) {
 });
 
 
-app
-  
-  .get('/', function(req, res) {
+app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
   });
+
+app.use('/qrcode.min.js', express.static(__dirname + '/qrcode.min.js'));
 
 console.log("Server running on port: " + port);
