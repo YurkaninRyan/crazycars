@@ -86,6 +86,6 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
   });
 
-app.use('/qrcode.min.js', express.static(__dirname + '/qrcode.min.js'));
+app.use("/public", express.static(__dirname + '/public'));
 
 console.log("Server running on port: " + port);
