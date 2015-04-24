@@ -192,53 +192,50 @@
 		  if (connected) {
 
     		qr.style.display = "none";
+    		var controller_state = {
+		    accelerate: false,
+		    steer: 0
+		  },
+		  emit_updates = function(){
+		    io.emit('controller_state_change', controller_state);
+		  }
+
+		  // When the server sends a changed controller state update it in the game
+		  io.on('controller_state_change', function(state) {
+
+	  		controller_state = state;
+
+		  });
+		  touchstart = function(e){
+		    e.preventDefault();
+
+		    controller_state.accelerate = true;
+		    emit_updates();
+		  },
+		  touchend = function(e){
+		    e.preventDefault();
+
+		    controller_state.accelerate = false;
+		    emit_updates();
+		  },
+		  devicemotion = function(e){
+		    controller_state.steer = e.accelerationIncludingGravity.y / 100;
+
+		    emit_updates();
+	 	  }
+
+		  document.body.addEventListener('touchstart', touchstart, false); // iOS & Android
+		  document.body.addEventListener('MSPointerDown', touchstart, false); // Windows Phone
+		  document.body.addEventListener('touchend', touchend, false); // iOS & Android
+		  document.body.addEventListener('MSPointerUp', touchend, false); // Windows Phone
+		  window.addEventListener('devicemotion', devicemotion, false);
 
   		}else{
-
     		qr.style.display = "block";
     		controller_state = {};
-
   		}
 
-  		var controller_state = {
-	    accelerate: false,
-	    steer: 0
-	  },
-	  emit_updates = function(){
-	    io.emit('controller_state_change', controller_state);
-	  }
-
-	  // When the server sends a changed controller state update it in the game
-	  io.on('controller_state_change', function(state) {
-
-  		controller_state = state;
-
-	  });
-	  touchstart = function(e){
-	    e.preventDefault();
-
-	    controller_state.accelerate = true;
-	    emit_updates();
-	  },
-	  touchend = function(e){
-	    e.preventDefault();
-
-	    controller_state.accelerate = false;
-	    emit_updates();
-	  },
-	  devicemotion = function(e){
-	    controller_state.steer = e.accelerationIncludingGravity.y / 100;
-
-	    emit_updates();
- 	  }
-
-	  document.body.addEventListener('touchstart', touchstart, false); // iOS & Android
-	  document.body.addEventListener('MSPointerDown', touchstart, false); // Windows Phone
-	  document.body.addEventListener('touchend', touchend, false); // iOS & Android
-	  document.body.addEventListener('MSPointerUp', touchend, false); // Windows Phone
-	  window.addEventListener('devicemotion', devicemotion, false);
-
-	     });
+	   });
 
 	</script>
 </body>
