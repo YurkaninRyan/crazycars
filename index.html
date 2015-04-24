@@ -10,11 +10,16 @@
 		body {
 	  		margin: 0;
 		}
-		#QR_code {
+		#qr {
 	  		position: absolute;
 			top: 0;
+			left: 0;
 			padding: 20px;
 			background: white;
+			z-index: 1;
+		}
+		canvas {
+			z-index: 0 !important;
 		}
 	</style>
 </head>
@@ -144,6 +149,5 @@
 	   });
 
 	</script>
-	<p>Does this shit work</p>
 </body>
 </html>
