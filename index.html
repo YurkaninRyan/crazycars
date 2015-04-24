@@ -50,6 +50,8 @@
 				}),
 				scene = new THREE.Scene(),
 				camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000),
+				var speed = 0,
+				controller_state = {};
 
 				// Lights
 				ambient_light 		= new THREE.AmbientLight(0x222222),
@@ -158,9 +160,6 @@
 				// Load the car model
 				loader.load(
 				  'public/car.js',
-
-				  var speed = 0,
-				  controller_state = {};
 
 				  function ( geometry, materials ) {
 
