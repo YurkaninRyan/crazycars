@@ -14,7 +14,6 @@
 	  		bottom: 0;
 	  		left: 0;
 	  		right: 0;
-	  		z-index: 9001;
 
 		}
 		#qr {
@@ -195,6 +194,12 @@
 
 		io.on('game_connected', game_connected)
 		io.on('controller_connected', function(connected) {
+		  // When the server sends a changed controller state update it in the game
+		  io.on('controller_state_change', function(state) {
+
+	  		controller_state = state;
+
+		  });
 
 		  if (connected) {
 
@@ -206,26 +211,22 @@
 		  emit_updates = function(){
 		    io.emit('controller_state_change', controller_state);
 		  }
-
-		  // When the server sends a changed controller state update it in the game
-		  io.on('controller_state_change', function(state) {
-
-	  		controller_state = state;
-
-		  });
 		  touchstart = function(e){
 		    e.preventDefault();
+		    alert("touchstart")
 
 		    controller_state.accelerate = true;
 		    emit_updates();
 		  },
 		  touchend = function(e){
 		    e.preventDefault();
+		    alert("touchend")
 
 		    controller_state.accelerate = false;
 		    emit_updates();
 		  },
 		  devicemotion = function(e){
+		  	alert("dm")
 		    controller_state.steer = e.accelerationIncludingGravity.y / 100;
 
 		    emit_updates();
