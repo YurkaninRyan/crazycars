@@ -67,8 +67,58 @@
 				  // Render using scene and camera
 				  renderer.render(scene, camera);
 
-				  if (car)
-				    car.rotation.y += 0.01;
+				  if (car) {
+
+					  // Rotate car
+					  if (controller_state.steer) {
+
+					    // Gives a number ranging from 0 to 1
+					    var percentage_speed = (speed / 2);
+
+					    // Rotate the car using the steer value
+					    // Multiplying it by the percentage speed makes the car not turn
+					    // unless accelerating and turns quicker as the speed increases.
+					    car.rotateY(controller_state.steer * percentage_speed);
+					  }
+
+					  // If controller is accelerating
+					  if (controller_state.accelerate) {
+
+					    // Add to speed until it is 2
+					    if (speed < 2) {
+					      speed += 0.05;
+					    } else {
+					      speed = 2;
+					    }
+
+					  // If controller is not accelerating
+					  } else {
+
+					    // Subtract from speed until 0
+					    if (0 < speed) {
+					      speed -= 0.05;
+					    } else {
+					      speed = 0;
+					    }
+					  }
+
+					  // Move car "forward" at speed
+					  car.translateZ(speed);
+
+					  // Collisions
+					  if (car.position.x > 150) {
+					    car.position.x = 150;
+					  }
+					  if (car.position.x < -150) {
+					    car.position.x = -150;
+					  }
+					  if (car.position.z > 150) {
+					    car.position.z = 150;
+					  }
+					  if (car.position.z < -150) {
+					    car.position.z = -150;
+					  }
+					}
 
 				  // Call self
 				  requestAnimationFrame(render);
@@ -109,6 +159,9 @@
 				loader.load(
 				  'public/car.js',
 
+				  var speed = 0,
+				  controller_state = {};
+
 				  function ( geometry, materials ) {
 
 				    // Create the mesh from loaded geometry and materials
@@ -143,10 +196,49 @@
   		}else{
 
     		qr.style.display = "block";
+    		controller_state = {};
 
   		}
 
-	   });
+  		var controller_state = {
+	    accelerate: false,
+	    steer: 0
+	  },
+	  emit_updates = function(){
+	    io.emit('controller_state_change', controller_state);
+	  }
+
+	  // When the server sends a changed controller state update it in the game
+	  io.on('controller_state_change', function(state) {
+
+  		controller_state = state;
+
+	  });
+	  touchstart = function(e){
+	    e.preventDefault();
+
+	    controller_state.accelerate = true;
+	    emit_updates();
+	  },
+	  touchend = function(e){
+	    e.preventDefault();
+
+	    controller_state.accelerate = false;
+	    emit_updates();
+	  },
+	  devicemotion = function(e){
+	    controller_state.steer = e.accelerationIncludingGravity.y / 100;
+
+	    emit_updates();
+ 	  }
+
+	  document.body.addEventListener('touchstart', touchstart, false); // iOS & Android
+	  document.body.addEventListener('MSPointerDown', touchstart, false); // Windows Phone
+	  document.body.addEventListener('touchend', touchend, false); // iOS & Android
+	  document.body.addEventListener('MSPointerUp', touchend, false); // Windows Phone
+	  window.addEventListener('devicemotion', devicemotion, false);
+
+	     });
 
 	</script>
 </body>
