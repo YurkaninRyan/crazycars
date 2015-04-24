@@ -50,8 +50,6 @@
 				}),
 				scene = new THREE.Scene(),
 				camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000),
-				speed = 0,
-				controller_state = {};
 
 				// Lights
 				ambient_light 		= new THREE.AmbientLight(0x222222),
@@ -126,6 +124,9 @@
 				  requestAnimationFrame(render);
 				},
 				car;
+
+				var speed = 0,
+				controller_state = {};
 
 				// Enable shadows
 				renderer.shadowMapEnabled = true;
