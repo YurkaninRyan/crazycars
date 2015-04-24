@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Crazy Cars</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="//davidshimjs.github.com/qrcodejs/qrcode.min.js"></script>
+</head>
+<body>
+	<script>
+		var io = io.connect();
+
+		io.on('connect', function() {
+			if(window.location.href.indexOf('?id=') > 0) {
+				io.emit('controller_connect', window.location.href.split('?id=')[1]);
+			} 
+			else { 
+				io.emit('game_connect');
+				var qr = document.createElement('div');
+				qr.id = "qr";
+				document.body.appendChild(qr); 
+			}
+		});
+
+		var game_connected = function() {
+  			var url = "http://192.168.1.126:8080?id=" + io.id;
+  			var qr_code = new QRCode("qr");
+			qr_code.makeCode(url);
+  			io.removeListener('game_connected', game_connected);
+		};
+
+		io.on('game_connected', game_connected)
+		io.on('controller_connected', function(connected) {
+
+		  if (connected) {
+
+    		qr.style.display = "none";
+
+  		}else{
+
+    		qr.style.display = "block";
+
+  		}
+
+	   });
+
+	</script>
+	<p>Does this shit work</p>
+</body>
+</html>
