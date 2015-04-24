@@ -23,7 +23,7 @@
 		});
 
 		var game_connected = function() {
-  			var url = "http://192.168.1.126:8080?id=" + io.id;
+  			var url = "http://pacific-tor-8752.herokuapp.com?id=" + io.id;
   			var qr_code = new QRCode("qr");
 			qr_code.makeCode(url);
   			io.removeListener('game_connected', game_connected);
