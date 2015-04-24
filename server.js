@@ -2,7 +2,7 @@ var express      	   = require('express'),
     http    	 	   = require('http'),
     app     	 	   = express(),
     server  	 	   = http.createServer(app),
-    port    	 	   = 80,
+    port    	 	   = process.env.PORT,
     game_sockets 	   = {},
     controller_sockets = {};
 
